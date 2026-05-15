@@ -1,0 +1,6 @@
+# 機密情報ファイル
+.env
+
+# Claude Codeの個人用・ローカル設定ファイル
+CLAUDE.local.md
+.claude/settings.local.json
