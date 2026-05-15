@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mf_cloud": {
+      "type": "http",
+      "url": "https://beta.mcp.developers.biz.moneyforward.com/mcp/ca/v3"
+    }
+  }
+}
