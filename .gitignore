@@ -13,3 +13,6 @@ data/input/*
 !data/input/.gitkeep
 data/output/*
 !data/output/.gitkeep
+
+# キャッシュデータ
+src/__pycache__/*
