@@ -4,3 +4,6 @@
 # Claude Codeの個人用・ローカル設定ファイル
 CLAUDE.local.md
 .claude/settings.local.json
+
+# Claude Codeの並列セッション用作業ディレクトリ
+.claude/worktrees/
