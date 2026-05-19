@@ -7,3 +7,9 @@ CLAUDE.local.md
 
 # Claude Codeの並列セッション用作業ディレクトリ
 .claude/worktrees/
+
+# データファイル（実データはGit管理外、フォルダ構造のみ維持）
+data/input/*
+!data/input/.gitkeep
+data/output/*
+!data/output/.gitkeep
