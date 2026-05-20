@@ -4,14 +4,10 @@ import json
 import sys
 import io
 
-# 出力のエンコーディングをUTF-8に固定（Windows対策）
-if sys.platform == "win32":
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    
 def get_structured_merchant_data(file_path):
     """
     CSVを読み込み、2行1セットの構造を維持しながら、
-    「明細の内容」をキーとしたIDとデータのマッピングを作成する。
+    「明細の内容」をキーとしたIDとデータのマッピングを作成する [1]。
     """
     if not os.path.exists(file_path):
         return {"error": f"入力ファイルが見つかりません: {file_path}"}
@@ -21,7 +17,7 @@ def get_structured_merchant_data(file_path):
     try:
         with open(file_path, mode='r', encoding='cp932', newline='') as f:
             reader = csv.DictReader(f)
-            # CSVの1列目（更新用IDのヘッダー）を確実に取得
+            # CSVの1列目（更新用IDのヘッダー）を確実に取得 [1]
             first_key = next(iter(reader.fieldnames))
             
             current_rule_id = None
@@ -43,7 +39,7 @@ def get_structured_merchant_data(file_path):
                             "original_data_samples": []
                         }
                     
-                    # IDの追跡リストに追加
+                    # IDの追跡リストに追加 [1]
                     if current_rule_id:
                         merchant_map[current_merchant]["ids"].append(current_rule_id)
                     
@@ -54,8 +50,7 @@ def get_structured_merchant_data(file_path):
                     if sample not in merchant_map[current_merchant]["original_data_samples"]:
                         merchant_map[current_merchant]["original_data_samples"].append(sample)
                 
-                # 「仕訳行」は直前のルール行に紐付くが、ここではID追跡が主目的のためカウントは不要
-                # 必要に応じて仕訳行の勘定科目などもマッピングに含めることが可能
+                # 「仕訳行」はここではID追跡が目的のため処理をスキップ
                 
         return merchant_map
 
@@ -63,9 +58,12 @@ def get_structured_merchant_data(file_path):
         return {"error": str(e)}
 
 if __name__ == "__main__":
-    # Windows環境での標準出力をUTF-8に設定
+    # Windows環境での標準出力をUTF-8に設定（文字化け対策） [会話履歴]
     if sys.platform == "win32":
-        sys.stdout.reconfigure(encoding='utf-8')
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except AttributeError:
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
     # data/input フォルダ内の最新CSVを取得
     input_dir = os.path.join("data", "input")
@@ -81,6 +79,6 @@ if __name__ == "__main__":
 
     target_csv = os.path.join(input_dir, sorted(csv_files)[-1])
     
-    # 構造化されたデータをJSONで出力
+    # 構造化されたデータをJSONで出力 [1]
     result = get_structured_merchant_data(target_csv)
     print(json.dumps(result, ensure_ascii=False, indent=2))
